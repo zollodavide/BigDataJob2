@@ -133,6 +133,12 @@ public class CustomStock {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "CustomStock [ticker=" + ticker + ", sector=" + sector + ", close=" + close + ", open=" + open
+				+ ", volume=" + volume + ", anno=" + anno + ", mese=" + mese + ", giorno=" + giorno + "]";
+	}
+
 	
 	
 

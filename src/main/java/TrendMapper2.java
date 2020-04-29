@@ -16,7 +16,7 @@ public class TrendMapper2 extends Mapper<Object, Text, Text, Text>{
 		ticker.set(parts[HistoricalStockConstants.TICKER]);
 		
 		try {
-			sector.set("sector:"+parts[HistoricalStockConstants.SECTOR]);
+			sector.set(parts[HistoricalStockConstants.SECTOR]);
 		}catch(Exception e) {
 			
 		}
