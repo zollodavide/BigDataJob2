@@ -9,7 +9,7 @@ public class TrendMapper1 extends Mapper<Object, Text, Text, Text> {
 	private Text ticker = new Text();
 	private Text openPrices = new Text();
 	private Text closePrices = new Text();
-	private Text volume;
+	private Text volume = new Text();
 	private Integer anno;
 	private Integer mese;
 	private Integer giorno;
@@ -21,13 +21,19 @@ public class TrendMapper1 extends Mapper<Object, Text, Text, Text> {
 		String[] parts = value.toString().split(",");
 		ticker.set(parts[HistoricalStockPricesConstants.TICKER]);
 		
+		String[] data = parts[HistoricalStockPricesConstants.DATE].split("-");
 		try {
-			String[] data = parts[HistoricalStockPricesConstants.DATE].split("-");
 			
 			openPrices.set(parts[HistoricalStockPricesConstants.OPEN]);
 			closePrices.set(parts[HistoricalStockPricesConstants.CLOSE]);
 			volume.set(parts[HistoricalStockPricesConstants.VOLUME]);
+		
+		} catch(Exception e) {
+			context.write(ticker, new Text("ERRORE2"));
+
+		}
 	
+		try {
 
 			if(Integer.parseInt(data[0])>=2008) {
 				
@@ -35,16 +41,11 @@ public class TrendMapper1 extends Mapper<Object, Text, Text, Text> {
 				mese = Integer.parseInt(data[1]);
 				giorno = Integer.parseInt(data[2]);
 				String all = volume+","+openPrices+","+closePrices+","+anno+","+mese+","+giorno;
-				
 				context.write(ticker, new Text(all));
-				
-				
 			}
 		} catch(Exception e) {
-			//ANCHE IN QUESTO CASO LA SOLUZIONE È SALTARE L'INPUT.
-		}
-		
-		
+			
+		}		
 	}
 	
 }
