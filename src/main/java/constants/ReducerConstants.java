@@ -1,3 +1,4 @@
+package constants;
 
 public class ReducerConstants {
 	public static final int VOLUME = 0;

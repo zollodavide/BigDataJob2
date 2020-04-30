@@ -1,7 +1,10 @@
+package mapred;
 import java.io.IOException;
 
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
+
+import constants.HistoricalStockConstants;
 
 public class TrendMapper2 extends Mapper<Object, Text, Text, Text>{
 	

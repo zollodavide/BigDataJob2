@@ -1,3 +1,5 @@
+package utility;
+import models.CustomStock;
 
 public class TrendUtility {
 	

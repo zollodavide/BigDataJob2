@@ -1,3 +1,4 @@
+package mapred;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,6 +7,10 @@ import java.util.Map;
 
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
+
+import constants.ReducerConstants;
+import models.CustomStock;
+import utility.TrendUtility;
 
 public class TrendReducer extends Reducer<Text, Text, Text, Text>{
 	
