@@ -159,7 +159,7 @@ public class TrendReducer extends Reducer<Text, Text, Text, Text>{
 					Double prezzoIN = azienda2dataIn.get(k).getClose();
 					Double prezzoFIN = azienda2dataFin.get(k).getClose();
 					
-					cumul += ((prezzoIN - prezzoFIN)/prezzoFIN);
+					cumul += ((prezzoIN - prezzoFIN)/prezzoIN);
 				}
 				
 				if(azienda2dataIn.keySet().size()>0)
