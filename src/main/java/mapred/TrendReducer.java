@@ -2,8 +2,10 @@ package mapred;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
@@ -80,19 +82,17 @@ public class TrendReducer extends Reducer<Text, Text, Text, Text>{
 
 		
 		for(String sector: sector2stocks.keySet()) {
-			
 			List<CustomStock> stc = sector2stocks.get(sector);
-			
-			
 			
 			for(int anno=2008; anno<2019; anno++) {
 				Double mediaVolumeAnnuale = 0.;
 				Double mediaDiffPerc = 0.;
 				Double mediaGiornalieraSettore=0.;
 				long volumeAnnuale =0;
-				Integer count=0;
 
+				Set<String> azioni = new HashSet<String>();
 				Map<String,Double> azienda2mediaGiornaliera= new HashMap<String, Double>();
+				Map<String,Integer> azienda2count= new HashMap<String, Integer>();
 				Map<String, CustomStock> azienda2dataIn = new HashMap<String, CustomStock>();
 				Map<String, CustomStock> azienda2dataFin = new HashMap<String, CustomStock>();
 				
@@ -102,8 +102,8 @@ public class TrendReducer extends Reducer<Text, Text, Text, Text>{
 						
 						/* VOLUME */
 						volumeAnnuale+=stock.getVolume();
-						count++;
-					
+						azioni.add(stock.getTicker());
+						
 					
 
 						/* DIFFERENZA PERCENTUALE */
@@ -134,20 +134,24 @@ public class TrendReducer extends Reducer<Text, Text, Text, Text>{
 		
 						double quotazioneGiornaliera = (stock.getOpen() + stock.getClose())/2;
 						if(azienda2mediaGiornaliera.containsKey(azienda)) {
+							Integer count = azienda2count.get(azienda);
 							Double tmp = azienda2mediaGiornaliera.get(azienda);
-							azienda2mediaGiornaliera.put(azienda, (tmp+quotazioneGiornaliera)/2);
+							count++;
+							azienda2mediaGiornaliera.put(azienda, (tmp+quotazioneGiornaliera));
+							azienda2count.put(azienda, count);
 						}
-						else 
+						else {
+							
 							azienda2mediaGiornaliera.put(azienda, quotazioneGiornaliera);
+							azienda2count.put(azienda, 1);
+						}
 						
 					}
 				}
 				
 				/* VOLUME */
-				
-				if(count!=0) {
-					
-					mediaVolumeAnnuale = (double) (volumeAnnuale/count);
+				if(azioni.size()!=0) {
+					mediaVolumeAnnuale = (double) (volumeAnnuale/azioni.size());
 				}
 				
 				
@@ -159,29 +163,36 @@ public class TrendReducer extends Reducer<Text, Text, Text, Text>{
 					Double prezzoIN = azienda2dataIn.get(k).getClose();
 					Double prezzoFIN = azienda2dataFin.get(k).getClose();
 					
-					cumul += ((prezzoIN - prezzoFIN)/prezzoIN);
+					cumul += (((prezzoFIN - prezzoIN)/prezzoIN))*100;
 				}
 				
 				if(azienda2dataIn.keySet().size()>0)
-					mediaDiffPerc = (double) Math.round((cumul/azienda2dataIn.keySet().size())*100);
+					mediaDiffPerc = (double) Math.round((cumul/azienda2dataIn.keySet().size()));
 				
 				
 				/* MEDIA GIORNALIERA */
 
 
 				if(azienda2mediaGiornaliera.size()!=0) {
-					Double sum=0.;
-					for(Double med : azienda2mediaGiornaliera.values())
-						sum+=med;
 					
-					mediaGiornalieraSettore = (sum/azienda2mediaGiornaliera.size());
+					double mediaAzienda = 0 ;
+					for(String k : azienda2mediaGiornaliera.keySet()) {
+						Integer c = azienda2count.get(k);
+						
+						mediaAzienda += (azienda2mediaGiornaliera.get(k)/c);
+					}
+					
+					mediaGiornalieraSettore = (mediaAzienda/azienda2mediaGiornaliera.size());
+					
 				}
 				
 				
 				String stringOutput = "Mean Volume: "+mediaVolumeAnnuale.toString() + 
 						", Mean Diff: " +mediaDiffPerc+"%" + 
 						", Mean Daily Quotation: " + String.format("%.2f", mediaGiornalieraSettore);
-				context.write(new Text(sector+ " " +anno), new Text(stringOutput));
+				
+				if (!(mediaVolumeAnnuale.equals(.0) && mediaDiffPerc.equals(.0) && mediaGiornalieraSettore.equals(.0)))
+					context.write(new Text(sector+ " " +anno), new Text(stringOutput));
 
 			
 			}

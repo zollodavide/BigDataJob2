@@ -10,7 +10,6 @@ public class CustomStock {
 	private Integer anno;
 	private Integer mese;
 	private Integer giorno;
-	private String azienda;
 	
 	public CustomStock() {
 		
@@ -29,14 +28,6 @@ public class CustomStock {
 	}
 	
 	
-
-	public String getAzienda() {
-		return azienda;
-	}
-
-	public void setAzienda(String azienda) {
-		this.azienda = azienda;
-	}
 
 	public String getDataIntera() {
 		return anno.toString()+"/"+mese.toString()+giorno.toString();
