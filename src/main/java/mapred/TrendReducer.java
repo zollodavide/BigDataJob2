@@ -18,16 +18,12 @@ public class TrendReducer extends Reducer<Text, Text, Text, Text>{
 	
 	private Map<String, String> ticker2sectors = new HashMap<String, String>();
 	private Map<String, String> ticker2azienda = new HashMap<String, String>();
-	private Map<String, List<CustomStock>> ticker2stocks = new HashMap<String, List<CustomStock>>();
-	private Map<String, List<CustomStock>> sector2stocks = new HashMap<String, List<CustomStock>>();
 	private List<CustomStock> stocks = new ArrayList<CustomStock>();
 	
 	@Override
 	protected void reduce(Text key, Iterable<Text> values, Reducer<Text, Text, Text, Text>.Context context)
 			throws IOException, InterruptedException {
 		
-		List<CustomStock> stocks;
-
 		for(Text value : values) {
 			
 			String[] parts = value.toString().split(",");
@@ -44,14 +40,7 @@ public class TrendReducer extends Reducer<Text, Text, Text, Text>{
 					custom.setMese(Integer.parseInt(parts[ReducerConstants.MESE]));
 					custom.setGiorno(Integer.parseInt(parts[ReducerConstants.GIORNO]));
 					
-					if(ticker2stocks.containsKey(key.toString()))
-						stocks = ticker2stocks.get(key.toString());
-					else
-						stocks = new ArrayList<CustomStock>();
-	
 					this.stocks.add(custom);
-					stocks.add(custom);
-					ticker2stocks.put(key.toString(),stocks);
 				} catch(Exception e ) {
 					
 				}
