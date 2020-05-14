@@ -4,6 +4,7 @@ public class CustomStock {
 
 	private String ticker;
 	private String sector;
+	private String azienda;
 	private Double close;
 	private Double open;
 	private Integer volume;
@@ -14,20 +15,9 @@ public class CustomStock {
 	public CustomStock() {
 		
 	}
+	
+	
 
-	public CustomStock(String ticker, String sector, Double close, Double open, Integer volume, Integer anno,
-			Integer mese, Integer giorno) {
-		this.ticker = ticker;
-		this.sector = sector;
-		this.close = close;
-		this.open = open;
-		this.volume = volume;
-		this.anno = anno;
-		this.mese = mese;
-		this.giorno = giorno;
-	}
-	
-	
 
 	public String getDataIntera() {
 		return anno.toString()+"/"+mese.toString()+giorno.toString();
@@ -140,10 +130,24 @@ public class CustomStock {
 		return true;
 	}
 
+	
+
+
 	@Override
 	public String toString() {
-		return "CustomStock [ticker=" + ticker + ", sector=" + sector + ", close=" + close + ", open=" + open
-				+ ", volume=" + volume + ", anno=" + anno + ", mese=" + mese + ", giorno=" + giorno + "]";
+		return "CustomStock [ticker=" + ticker + ", sector=" + sector + ", azienda=" + azienda + ", close=" + close
+				+ ", open=" + open + ", volume=" + volume + ", anno=" + anno + ", mese=" + mese + ", giorno=" + giorno
+				+ "]";
+	}
+
+
+	public String getAzienda() {
+		return azienda;
+	}
+
+
+	public void setAzienda(String azienda) {
+		this.azienda = azienda;
 	}
 
 	
